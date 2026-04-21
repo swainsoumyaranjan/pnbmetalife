@@ -109,9 +109,16 @@ app.post('/verify-payment', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n================================`);
-  console.log(`UPI payment page + Telegram notify`);
-  console.log(`http://localhost:${PORT}`);
-  console.log(`================================\n`);
-});
+
+// For Vercel serverless deployment, export the app
+if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+  module.exports = app;
+} else {
+  // For local development
+  app.listen(PORT, () => {
+    console.log(`\n================================`);
+    console.log(`UPI payment page + Telegram notify`);
+    console.log(`http://localhost:${PORT}`);
+    console.log(`================================\n`);
+  });
+}
