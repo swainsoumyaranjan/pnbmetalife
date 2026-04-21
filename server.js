@@ -1,23 +1,26 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(express.static('./'));
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
+
+// Handle root path to serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 const TELEGRAM_BOT_TOKEN = '8648940054:AAH6iqlrVYfyIbw5WdF3RwkGLVGIEC736qI';
 const TELEGRAM_CHAT_ID = '8658517089';
 
-// Store pending payments for verification
-const pendingPayments = new Map();
+// ... existing code ...
 
-/**
- * Notify when payment is initiated
- */
 app.post('/notify-paid', async (req, res) => {
   try {
     const { name, policyNumber, mobileNumber, amount, method, refId } = req.body;
@@ -67,9 +70,8 @@ app.post('/notify-paid', async (req, res) => {
   }
 });
 
-/**
- * Mark payment as verified (called when admin confirms)
- */
+// ... existing code ...
+
 app.post('/verify-payment', async (req, res) => {
   try {
     const { refId } = req.body;
